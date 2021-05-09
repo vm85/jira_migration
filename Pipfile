@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+jira = "~=2.0"
+python-redmine = "~=2.3"
+
+[dev-packages]
+flake8 = "*"
+flake8-import-order = "*"
+flake8-docstrings = "*"
+flake8-quotes = "*"
+flake8-builtins = "*"
+isort = "*"
+ipdb = "*"
+
+[requires]
+python_version = "3.8"
