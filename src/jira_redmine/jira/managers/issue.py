@@ -2,38 +2,43 @@
 from typing import List
 from typing import Union
 
-from jira_redmine.base.manager import BaseManager
 from jira_redmine.base.resources.issue import Issue
-from jira_redmine.base.resources.project import Project
+from jira_redmine.jira.converter import Converter
+from jira_redmine.jira.managers.base import BaseJiraManager
 
 
-class IssueManager(BaseManager):
-    """"""
+class IssueManager(BaseJiraManager):
+    """Менеджер доступа к задачам Jira."""
 
-    @staticmethod
-    def _get_issue(issue):
-        """"""
-        project = issue.fields.project
-        return Issue(
-            resource_id=issue.id,
-            key=issue.key,
-            subject=issue.fields.summary,
-            description=issue.fields.description,
-            project=Project(
-                resource_id=project.id,
-                key=project.key,
-                name=project.name,
-                # TODO разобраться почему нет описания в all
-                description=getattr(project, 'description', ''),
-            )
-        )
-
-    def all(self, project_id: Union[int, str]) -> List[Issue]:
-        """"""
+    def get_all(self, project_id: Union[int, str]) -> List[Issue]:
+        """Получить все задачи по проекту."""
         issues = self._client.search_issues(f'project = "{project_id}"')
-        return [self._get_issue(issue) for issue in issues]
+        return [Converter.get_issue(issue) for issue in issues]
 
     def get(self, issue_id: Union[int, str]) -> Issue:
-        """"""
-        issue = self._client.issue(issue_id)
-        return self._get_issue(issue)
+        """Получить задачу по идентификатору."""
+        issue = self._get_or_raise('issue', issue_id, Issue)
+        return Converter.get_issue(issue)
+
+    def create(self, issue: Issue) -> Issue:
+        """Создать новую звдачу."""
+        jira_issue = self._client.create_issue(
+            project=issue.project.key,
+            summary=issue.subject,
+            description=issue.description,
+            issuetype={'id': issue.issue_type.key},
+            assignee={'id': issue.assignee.key} if issue.assignee else None,
+            reporter={'id': issue.creator.key},
+            # created=issue.created,
+        )
+        self.update_status(issue)
+        return self.get(jira_issue.key)
+
+    def update_status(self, issue: Issue) -> Issue:
+        """Обновление статуса задачи."""
+        self._client.transition_issue(issue.key, issue.status.name)
+        return issue
+
+    def update(self, issue: Issue) -> Issue:
+        """Обновление задачи."""
+        raise NotImplementedError

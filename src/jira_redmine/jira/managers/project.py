@@ -2,30 +2,30 @@
 from typing import List
 from typing import Union
 
-from jira_redmine.base.manager import BaseManager
 from jira_redmine.base.resources.project import Project
+from jira_redmine.jira.converter import Converter
+from jira_redmine.jira.managers.base import BaseJiraManager
 
 
-class ProjectManager(BaseManager):
-    """"""
+class ProjectManager(BaseJiraManager):
+    """Менеджер доступа к проектам Jira."""
 
-    @staticmethod
-    def _get_project(project):
-        """"""
-        return Project(
-            resource_id=project.id,
-            key=project.key,
-            name=project.name,
-            # TODO разобраться почему нет описания в all
-            description=getattr(project, 'description', ''),
-        )
-
-    def all(self) -> List[Project]:
-        """"""
+    def get_all(self) -> List[Project]:
+        """Получить все проекты."""
         projects = self._client.projects()
-        return [self._get_project(project) for project in projects]
+        return [Converter.get_project(project) for project in projects]
 
     def get(self, project_id: Union[int, str]) -> Project:
-        """"""
-        project = self._client.project(project_id)
-        return self._get_project(project)
+        """Получить проект по идентификатору."""
+        project = self._get_or_raise('project', project_id, Project)
+        return Converter.get_project(project)
+
+    def create(self, project: Project) -> Project:
+        """Создать новый проект."""
+        jira_project = self._client.create_project(
+            key=project.key,
+            name=project.name,
+            description=project.description,
+            assignee=project.creator.key,
+        )
+        return self.get(jira_project.key)
