@@ -29,7 +29,7 @@ class Issue(UserDefaultMixin, BaseResource):
         self.description = description
         self.project = project
         self.created = created
-        self.creator = creator or self.def_user
+        self.creator = creator or self._get_def_user()
         self.issue_type = issue_type
         self.status = status
         self.assignee = assignee

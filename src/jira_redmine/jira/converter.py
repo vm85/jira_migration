@@ -59,7 +59,7 @@ class Converter(BaseConverter):
             name=project.name,
             # TODO разобраться почему нет описания в all
             description=getattr(project, 'description', None),
-            creator=cls.get_user(project.lead)
+            creator=cls.get_user(getattr(project, 'lead', None))
         )
 
     @classmethod

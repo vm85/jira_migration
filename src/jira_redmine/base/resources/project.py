@@ -19,4 +19,4 @@ class Project(UserDefaultMixin, BaseResource):
         super().__init__(**kwargs)
         self.name = name
         self.description = description
-        self.creator = creator or self.def_user
+        self.creator = creator or self._get_def_user()

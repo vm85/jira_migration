@@ -19,8 +19,7 @@ class UserDefaultMixin:
 
     __def_user = None
 
-    @property
-    def def_user(self):
+    def _get_def_user(self):
         """Ресурс пользователя по умолчанию."""
         if not self.__def_user:
             self.__def_user = User(
