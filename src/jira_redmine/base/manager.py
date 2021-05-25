@@ -3,6 +3,7 @@ from abc import ABC
 from abc import abstractmethod
 from typing import Callable
 from typing import List
+from typing import Optional
 from typing import Type
 from typing import Union
 
@@ -31,7 +32,7 @@ class BaseManager(ABC):
         resource_id: Union[int, str],
         resource_class: Type[BaseResource],
         exceptions: Union[List[Exception], Type[Exception]] = None,
-        obj_not_exists_checker: Union[Callable, None] = None,
+        obj_not_exists_checker: Optional[Callable] = None,
         **kwargs
     ) -> [JiraResource, RedmineResource]:
         """Получить ресурс или выдать ошибку отсутствия ресурса на клиенте."""

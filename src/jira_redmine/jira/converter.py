@@ -1,14 +1,16 @@
 # coding: utf-8
-from typing import Union
+from typing import Optional
 
 from jira.resources import Issue as JiraIssue
 from jira.resources import IssueType as JiraIssueType
 from jira.resources import Project as JiraProject
+from jira.resources import Attachment as JiraAttachment
 from jira.resources import Status as JiraIssueStatus
 from jira.resources import User as JiraUser
 
 from jira_redmine.base.converter import BaseConverter
 from jira_redmine.base.resources.issue import Issue
+from jira_redmine.base.resources.issue import Attachment
 from jira_redmine.base.resources.issue_status import IssueStatus
 from jira_redmine.base.resources.issue_type import IssueType
 from jira_redmine.base.resources.project import Project
@@ -19,7 +21,7 @@ class Converter(BaseConverter):
     """Класс-преобразователь из ресурса Jira в локальный ресурс."""
 
     @classmethod
-    def get_user(cls, user: Union[JiraUser, None]) -> Union[User, None]:
+    def get_user(cls, user: Optional[JiraUser]) -> Optional[User]:
         """Преобразование пользователя Jira в локального пользователя."""
         if not user:
             return
@@ -76,4 +78,27 @@ class Converter(BaseConverter):
             issue_type=cls.get_issue_type(issue.fields.issuetype),
             status=cls.get_issue_status(issue.fields.status),
             assignee=cls.get_user(issue.fields.assignee),
+            story_points=issue.fields.story_points,
+            attachments=[
+                cls.get_attachment(attachment)
+                for attachment in issue.fields.attachment
+                if attachment
+            ],
+        )
+
+    @classmethod
+    def get_attachment(
+        cls, attachment: Optional[JiraAttachment]
+    ) -> Optional[Attachment]:
+        """Преобразование вложения Jira в локальное вложение."""
+        if not attachment:
+            return
+
+        return Attachment(
+            resource_id=str(attachment.id),
+            name=attachment.name,
+            filename=attachment.filename,
+            link=attachment.content,
+            content_type=attachment.content_type,
+            creator=cls.get_user(attachment.author),
         )

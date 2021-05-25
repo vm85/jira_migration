@@ -1,14 +1,16 @@
 # coding: utf-8
-from typing import Union
+from typing import Optional
 
 from redminelib.resources import Issue as RedmineIssue
 from redminelib.resources import IssueStatus as RedmineIssueStatus
 from redminelib.resources import Project as RedmineProject
 from redminelib.resources import Tracker as RedmineIssueType
 from redminelib.resources import User as RedmineUser
+from redminelib.resources import Attachment as RedmineAttachment
 
 from jira_redmine.base.converter import BaseConverter
 from jira_redmine.base.resources.issue import Issue
+from jira_redmine.base.resources.attachment import Attachment
 from jira_redmine.base.resources.issue_status import IssueStatus
 from jira_redmine.base.resources.issue_type import IssueType
 from jira_redmine.base.resources.project import Project
@@ -19,7 +21,7 @@ class Converter(BaseConverter):
     """Класс-преобразователь из ресурса Redmine в локальный ресурс."""
 
     @classmethod
-    def get_user(cls, user: Union[RedmineUser, None]) -> Union[User, None]:
+    def get_user(cls, user: Optional[RedmineUser]) -> Optional[User]:
         """Преобразование пользователя Redmine в локального пользователя."""
         if not user:
             return
@@ -70,6 +72,14 @@ class Converter(BaseConverter):
     def get_issue(cls, issue: RedmineIssue) -> Issue:
         """Преобразование задачи Redmine в локальную задачу."""
         project = issue.project
+        story_point_obj = next(filter(
+            lambda f: f.name == 'Оценка SP',
+            issue.custom_fields
+        ), None)
+        story_points = (
+            getattr(story_point_obj, 'value', None)
+            if story_point_obj else None
+        )
         return Issue(
             resource_id=str(issue.id),
             subject=issue.subject,
@@ -79,5 +89,28 @@ class Converter(BaseConverter):
             creator=cls.get_user(issue.author),
             issue_type=cls.get_issue_type(issue.tracker),
             status=cls.get_issue_status(issue.status),
-            assignee=cls.get_user(getattr(issue, 'assigned_to', None))
+            assignee=cls.get_user(getattr(issue, 'assigned_to', None)),
+            story_points=story_points,
+            attachments=[
+                cls.get_attachment(attachment)
+                for attachment in issue.attachments
+                if attachment
+            ],
+        )
+
+    @classmethod
+    def get_attachment(
+        cls, attachment: Optional[RedmineAttachment]
+    ) -> Optional[Attachment]:
+        """Преобразование вложения Redmine в локальное вложение."""
+        if not attachment:
+            return
+
+        return Attachment(
+            resource_id=str(attachment.id),
+            filename=attachment.filename,
+            link=attachment.content_url,
+            description=attachment.description,
+            content_type=attachment.content_type,
+            creator=cls.get_user(attachment.author),
         )

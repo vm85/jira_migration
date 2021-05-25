@@ -10,7 +10,7 @@ class User(BaseResource):
 
     def __init__(self, name: str = None, email: str = None, **kwargs):
         super().__init__(**kwargs)
-        self.name = name
+        self.name = name.strip()
         self.email = email
 
 

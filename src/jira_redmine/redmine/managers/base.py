@@ -1,7 +1,4 @@
 # coding: utf-8
-
-
-# coding: utf-8
 from abc import ABC
 from typing import Type
 from typing import Union

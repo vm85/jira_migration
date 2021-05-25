@@ -1,14 +1,15 @@
 # coding: utf-8
-
-
-# coding: utf-8
 from abc import ABC
 from http import HTTPStatus
 from typing import Type
 from typing import Union
 
 from jira.exceptions import JIRAError
-from jira.resources import Resource as JiraResource
+from jira.resources import Issue as JiraIssue
+from jira.resources import IssueType as JiraIssueType
+from jira.resources import Project as JiraProject
+from jira.resources import Status as JiraIssueStatus
+from jira.resources import User as JiraUser
 
 from jira_redmine.base.manager import BaseManager
 from jira_redmine.base.resources.base import BaseResource
@@ -23,7 +24,9 @@ class BaseJiraManager(BaseManager, ABC):
         resource_id: Union[int, str],
         resource_class: Type[BaseResource],
         **kwargs
-    ) -> JiraResource:
+    ) -> Union[
+        JiraUser, JiraProject, JiraIssueStatus, JiraIssueType, JiraIssue
+    ]:
         """Получить ресурс или выдать ошибку отсутствия ресурса Jira."""
         return super()._get_or_raise(
             manager_name,

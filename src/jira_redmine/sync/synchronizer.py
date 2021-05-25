@@ -3,6 +3,9 @@ from jira_redmine.base.exceptions import ObjectNotExists
 from jira_redmine.base.repository import BaseRepository
 from jira_redmine.settings import projects_mapper
 from jira_redmine.settings import projects_only
+import traceback
+import sys
+from typing import Union
 
 
 class Synchronizer:
@@ -28,7 +31,7 @@ class Synchronizer:
                 lambda p: p.key in projects_mapper[project.key],
                 projects
             ))
-            self._projects[project].append(sub_projects)
+            self._projects[project] += sub_projects
 
             try:
                 self._target.project.get(project.key)
@@ -38,8 +41,23 @@ class Synchronizer:
                 self._target.project.create(project)
                 break
 
+    def _get_issues(self) -> list:
+        """"""
+        issues = []
+        for project, sub_projects in self._projects.items():
+            issues += self._source.issue.get_all(project.key)
+            for sub_project in sub_projects:
+                issues += self._source.issue.get_all(sub_project.key)
+
+        return list(sorted(issues, key=lambda x: x.key))
+
     def _sync_issues(self):
         """Синхронизация задач."""
+        for issue in self._get_issues():
+            issue = self._target.issue.create(issue)
+
+
+
 
     def sync(self):
         """Основной метод синхронизации."""
@@ -72,9 +90,13 @@ class Synchronizer:
         params = zip(params, args)
 
         for (name, manager, method), arg in params:
-            print(f'\n{name}:')
             try:
+                print(f'\n{name}:')
                 resource = getattr(getattr(repo, manager), method)(*arg)
                 print(resource)
             except Exception as exc:
                 print('Exception:', exc)
+                # traceback.print_exc(),
+                # traceback.print_tb(exc.__traceback__),
+                # traceback.print_exception(*sys.exc_info()),
+
