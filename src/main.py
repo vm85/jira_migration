@@ -2,9 +2,18 @@
 from jira_redmine import settings
 from jira_redmine.jira.repository import JiraRepository
 from jira_redmine.redmine.repository import RedmineRepository
-from jira_redmine.sync.synchronizer import Synchronizer
+from jira_redmine.sync.main import MainSynchronizer
+from jira_redmine.sync.linkers.database import DBLinker
+from jira_redmine.base.providers.database import DBProvider
+
 import jira_redmine.jira.client_fix  # noqa: F401
 
+
+# sql = 'select top 10 * from issues where id in (?, ?)'
+# args = (3, 2)
+# # # res = providers.execute(sql, *args)
+# res = providers.one(sql, *args)
+# print(res)
 
 redmine_repo = RedmineRepository(
     settings.redmine['url'],
@@ -20,14 +29,38 @@ jira_repo = JiraRepository(
     )
 )
 
-s = Synchronizer(redmine_repo, jira_repo)
-s.sync()
+db_linker = DBLinker(
+    settings.db['driver'],
+    settings.db['server'],
+    settings.db['db_name'],
+    link_params=settings.db['link_params'],
+    **settings.db['params']
+)
+
+s = MainSynchronizer(redmine_repo, jira_repo, db_linker)
+# s.sync(project_params=project_params)
 # s.print_all(
 #   [[], ['11'],  [], ['1'],     [], ['1'], [], ['PD'], ['PD'], ['4385']],
 #   [[], ['123'], [], ['10009'], [], ['3'], [], ['PD'], ['PD'], ['PD-2']],
 # )
+# print(redmine_repo.issue.get(4293))
 
 """
+table = 'jira_redmine_link'
+print(list(db.all(table)))
+print(list(db.all(table, column_values=['jira_key', 'resource'])))
+print(list(db.all(table, where_values={'jira_key': '111'})))
+print(list(db.all(table, where_values="jira_key in ('111','222','3')")))
+print(list(db.one(table, column_values=['jira_key', 'resource'])))
+print(list(db.one(table, where_values={'jira_key': '111'})))
+print(list(db.one(table, where_values="jira_key in ('111','222','3')")))
+print(db.exists(table))
+print(db.exists(table, where_values={'jira_key': '1111'}))
+print(db.exists(table, where_values="jira_key in ('111','222','3')"))
+
+
+print(redmine_repo.issue.update(issue, custom_fields=[{'id': 32, 'value': ''}]))
+
 from jira_redmine.base.resources.issue import Issue
 from jira_redmine.base.resources.issue_status import IssueStatus
 from jira_redmine.base.resources.issue_type import IssueType

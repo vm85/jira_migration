@@ -50,3 +50,8 @@ class IssueManager(BaseRedmineManager):
         #     # ]
         # )
         # return Converter.get_issue(issue)
+
+    def update(self, issue: Issue, **fields):
+        """"""
+        self._client.issue.update(issue.key, **fields)
+        return self.get(issue.key)

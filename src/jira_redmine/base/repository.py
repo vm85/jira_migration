@@ -1,8 +1,7 @@
 # coding: utf-8
-from abc import ABC
 
 
-class BaseRepository(ABC):
+class BaseRepository:
     """Базовый репозиторий доступа к данным."""
 
     # Клиент доступа к данным

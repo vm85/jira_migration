@@ -7,6 +7,7 @@ name = "pypi"
 requests = "*"
 jira = "~=2.0"
 python-redmine = "~=2.3"
+pyodbc = "~=4.0"
 
 [dev-packages]
 flake8 = "*"
