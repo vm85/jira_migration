@@ -1,6 +1,5 @@
 # coding: utf-8
 from jira_redmine.base.resources.base import BaseResource
-from jira_redmine.base.resources.user import User
 
 
 class Journal(BaseResource):

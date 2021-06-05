@@ -1,14 +1,16 @@
 # coding: utf-8
-from typing import Optional
 from typing import Dict
-from typing import Union
 from typing import List
+from typing import Optional
+from typing import Union
+
 import pyodbc
+
 from jira_redmine.base.providers.base import BaseProvider
 
 
 class DBProvider(BaseProvider):
-    """"""
+    """Провайдер работы с данными в БД."""
 
     __connection: pyodbc.Connection = None
 
@@ -24,12 +26,12 @@ class DBProvider(BaseProvider):
 
     @property
     def _connection_string(self):
-        """"""
+        """Строка подключения."""
         return self._get_assign_str(self._params, ';', True)
 
     @property
     def _connection(self) -> pyodbc.Connection:
-        """"""
+        """Коннекшн к БД."""
         if not self.__connection:
             self.__connection = pyodbc.connect(self._connection_string)
 
@@ -41,7 +43,7 @@ class DBProvider(BaseProvider):
         joiner: str = ',',
         with_values: bool = False
     ):
-        """"""
+        """Получение форматированной строки присвоения."""
         if isinstance(column_values, list):
             column_values = dict.fromkeys(column_values)
 
@@ -55,10 +57,10 @@ class DBProvider(BaseProvider):
         ))
 
     def _execute(self, sql: str, *args, **_) -> pyodbc.Cursor:
-        """"""
+        """Выполнить sql."""
         return self._connection.execute(sql, *args)
 
-    def all(
+    def all(  # noqa: A003
         self,
         table_name: str,
         column_values: Optional[List] = None,
@@ -66,7 +68,7 @@ class DBProvider(BaseProvider):
         *args,
         **_
     ) -> pyodbc.Cursor:
-        """"""
+        """Получение всех строк из таблицы."""
         columns_sql = ','.join(column_values) if column_values else '*'
         where_sql = ''
         where_values_list = []
@@ -92,7 +94,7 @@ class DBProvider(BaseProvider):
         *args,
         **_
     ) -> pyodbc.Row:
-        """"""
+        """Получение одной строки из таблицы."""
         return self.all(
             table_name, column_values, where_values, *args
         ).fetchone()
@@ -104,13 +106,13 @@ class DBProvider(BaseProvider):
         *args,
         **_
     ) -> bool:
-        """"""
+        """Проверка на существование записи в таблице."""
         return self.one(
             table_name, where_values=where_values, *args
         ) is not None
 
     def add(self, table_name: str, column_values: dict, *args, **_):
-        """"""
+        """Добавление записи в таблицу."""
         columns = ','.join(column_values.keys())
         values = '?, ' * len(column_values)
         sql = ' '.join([
@@ -127,7 +129,7 @@ class DBProvider(BaseProvider):
         *args,
         **_
     ):
-        """"""
+        """Изменение записи в таблице."""
         columns_sql = self._get_assign_str(column_values)
         where_sql = self._get_assign_str(where_values, ' and ')
         sql = ' '.join([

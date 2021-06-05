@@ -1,18 +1,22 @@
 # coding: utf-8
-from jira_redmine.base.repository import BaseRepository
-from jira_redmine.base.exceptions import ObjectNotExists
-from jira_redmine.base.resources.base import BaseResource
-from abc import abstractmethod
 from abc import ABC
-from jira_redmine.sync.linkers.base import BaseLinker
+from abc import abstractmethod
+
+from jira_redmine.base.exceptions import ObjectNotExists
 from jira_redmine.base.manager import BaseManager
+from jira_redmine.base.repository import BaseRepository
+from jira_redmine.base.resources.base import BaseResource
+from jira_redmine.sync.linkers.base import BaseLinker
 
 
 class BaseSynchronizer(ABC):
     """Базовый класс синхронизации объектов."""
 
     def __init__(
-        self, source: BaseRepository, target: BaseRepository, linker: BaseLinker
+        self,
+        source: BaseRepository,
+        target: BaseRepository,
+        linker: BaseLinker
     ):
         self._source = source
         self._target = target
@@ -20,10 +24,12 @@ class BaseSynchronizer(ABC):
 
     @abstractmethod
     def sync(self, **kwargs):
-        """"""
+        """Основной метод синхронизации."""
 
-    def _get_or_create(self, manager: BaseManager, source_obj: BaseResource):
-        """"""
+    def _get_or_create(
+        self, manager: BaseManager, source_obj: BaseResource
+    ) -> BaseResource:
+        """Вернуть ресурс, при необходимости создать."""
         try:
             target_object = manager.get(source_obj.key)
         except ObjectNotExists:

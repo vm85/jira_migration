@@ -1,12 +1,13 @@
 # coding: utf-8
 from typing import Dict
-from jira_redmine.sync.linkers.base import BaseLinker
-from jira_redmine.base.resources.base import BaseResource
+
 from jira_redmine.base.providers.database import DBProvider
+from jira_redmine.base.resources.base import BaseResource
+from jira_redmine.sync.linkers.base import BaseLinker
 
 
 class DBLinker(BaseLinker):
-    """"""
+    """Класс для связи ресурсов Jira и Redmine с помощью БД."""
 
     _provider_class = DBProvider
 
@@ -42,8 +43,8 @@ class DBLinker(BaseLinker):
             )
 
     @staticmethod
-    def _get_not_empty_value(source, key):
-        """"""
+    def _get_not_empty_value(source: dict, key: str):
+        """Получить не пустое значение или бросить ошибку KeyError."""
         def _exc(k):
             raise KeyError(k)
 
@@ -57,7 +58,7 @@ class DBLinker(BaseLinker):
         *args,
         **kwargs
     ):
-        """"""
+        """Связать ресурсы."""
         column_values = {
             self._resource_field_name: source_object.get_resource_caption(),
             self._source_field_name: source_object.key,

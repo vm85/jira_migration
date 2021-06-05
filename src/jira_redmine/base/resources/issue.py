@@ -4,14 +4,14 @@ from typing import List
 from typing import Optional
 
 from jira_redmine.base.resources.attachment import Attachment
-from jira_redmine.base.resources.relation import Relation
-from jira_redmine.base.resources.comment import Comment
-from jira_redmine.base.resources.journal import Journal
-from jira_redmine.base.resources.time_entry import TimeEntry
 from jira_redmine.base.resources.base import BaseResource
+from jira_redmine.base.resources.comment import Comment
 from jira_redmine.base.resources.issue_status import IssueStatus
 from jira_redmine.base.resources.issue_type import IssueType
+from jira_redmine.base.resources.journal import Journal
 from jira_redmine.base.resources.project import Project
+from jira_redmine.base.resources.relation import Relation
+from jira_redmine.base.resources.time_entry import TimeEntry
 from jira_redmine.base.resources.user import User
 from jira_redmine.base.resources.user import UserDefaultMixin
 

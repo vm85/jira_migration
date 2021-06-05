@@ -1,19 +1,19 @@
 # coding: utf-8
-from typing import Optional
 from typing import Dict
 from typing import List
-from jira_redmine.sync.base import BaseSynchronizer
+from typing import Optional
+
 from jira_redmine.base.resources.project import Project
+from jira_redmine.sync.base import BaseSynchronizer
 
 
 class ProjectSynchronizer(BaseSynchronizer):
     """Класс синхронизации проектов."""
 
-    def _sync_projects(
+    def _sync(
         self, specified: List, mapper: Dict
     ) -> Dict[Project, List[Project]]:
         """Синхронизация проектов."""
-
         if specified:
             projects = []
             for project_key in specified:
@@ -40,4 +40,4 @@ class ProjectSynchronizer(BaseSynchronizer):
         mapper: Optional[Dict] = None
     ) -> Dict[Project, List[Project]]:
         """Основной метод синхронизации."""
-        return self._sync_projects(specified, mapper)
+        return self._sync(specified, mapper)

@@ -1,16 +1,16 @@
 # coding: utf-8
 from typing import Optional
 
+from jira.resources import Attachment as JiraAttachment
 from jira.resources import Issue as JiraIssue
 from jira.resources import IssueType as JiraIssueType
 from jira.resources import Project as JiraProject
-from jira.resources import Attachment as JiraAttachment
 from jira.resources import Status as JiraIssueStatus
 from jira.resources import User as JiraUser
 
 from jira_redmine.base.converter import BaseConverter
-from jira_redmine.base.resources.issue import Issue
 from jira_redmine.base.resources.issue import Attachment
+from jira_redmine.base.resources.issue import Issue
 from jira_redmine.base.resources.issue_status import IssueStatus
 from jira_redmine.base.resources.issue_type import IssueType
 from jira_redmine.base.resources.project import Project

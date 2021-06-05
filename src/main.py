@@ -1,11 +1,10 @@
 # coding: utf-8
 from jira_redmine import settings
+from jira_redmine.base.providers.database import DBProvider
 from jira_redmine.jira.repository import JiraRepository
 from jira_redmine.redmine.repository import RedmineRepository
-from jira_redmine.sync.main import MainSynchronizer
 from jira_redmine.sync.linkers.database import DBLinker
-from jira_redmine.base.providers.database import DBProvider
-
+from jira_redmine.sync.main import MainSynchronizer
 import jira_redmine.jira.client_fix  # noqa: F401
 
 

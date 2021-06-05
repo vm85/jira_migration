@@ -1,25 +1,25 @@
 # coding: utf-8
 from typing import Optional
 
+from redminelib.resources import Attachment as RedmineAttachment
 from redminelib.resources import Issue as RedmineIssue
-from redminelib.resources import IssueStatus as RedmineIssueStatus
-from redminelib.resources import Project as RedmineProject
-from redminelib.resources import Tracker as RedmineIssueType
 from redminelib.resources import IssueJournal as RedmineComment
 from redminelib.resources import IssueRelation as RedmineRelation
+from redminelib.resources import IssueStatus as RedmineIssueStatus
+from redminelib.resources import Project as RedmineProject
 from redminelib.resources import TimeEntry as RedmineTimeEntry
+from redminelib.resources import Tracker as RedmineIssueType
 from redminelib.resources import User as RedmineUser
-from redminelib.resources import Attachment as RedmineAttachment
 
 from jira_redmine.base.converter import BaseConverter
-from jira_redmine.base.resources.issue import Issue
 from jira_redmine.base.resources.attachment import Attachment
-from jira_redmine.base.resources.relation import Relation
-from jira_redmine.base.resources.time_entry import TimeEntry
 from jira_redmine.base.resources.comment import Comment
+from jira_redmine.base.resources.issue import Issue
 from jira_redmine.base.resources.issue_status import IssueStatus
 from jira_redmine.base.resources.issue_type import IssueType
 from jira_redmine.base.resources.project import Project
+from jira_redmine.base.resources.relation import Relation
+from jira_redmine.base.resources.time_entry import TimeEntry
 from jira_redmine.base.resources.user import User
 from jira_redmine.settings import redmine as redmine_params
 

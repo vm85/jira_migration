@@ -1,9 +1,10 @@
 # coding: utf-8
 from typing import Dict
 from typing import Optional
+
 from jira_redmine.sync.base import BaseSynchronizer
-from jira_redmine.sync.project import ProjectSynchronizer
 from jira_redmine.sync.issue import IssueSynchronizer
+from jira_redmine.sync.project import ProjectSynchronizer
 
 
 class MainSynchronizer(BaseSynchronizer):
