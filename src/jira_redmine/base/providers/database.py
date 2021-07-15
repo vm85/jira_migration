@@ -134,7 +134,7 @@ class DBProvider(BaseProvider):
         where_sql = self._get_assign_str(where_values, ' and ')
         sql = ' '.join([
             f'update {table_name}',
-            f'set {columns_sql}'
+            f'set {columns_sql} '
             f'where {where_sql}' if where_sql else '',
         ])
         self._execute(

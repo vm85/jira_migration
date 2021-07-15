@@ -2,18 +2,18 @@
 from typing import Dict
 from typing import Optional
 
-from jira_redmine.sync.base import BaseSynchronizer
-from jira_redmine.sync.issue import IssueSynchronizer
-from jira_redmine.sync.project import ProjectSynchronizer
+from jira_redmine.sync.base import SynchronizerBase
+from jira_redmine.sync.issue import SynchronizerIssue
+from jira_redmine.sync.project import SynchronizerProject
 
 
-class MainSynchronizer(BaseSynchronizer):
+class Synchronizer(SynchronizerBase):
     """Основной класс синхронизации объектов."""
 
     def __init__(self, *args):
         super().__init__(*args)
-        self._projects_sync = ProjectSynchronizer(*args)
-        self._issues_sync = IssueSynchronizer(*args)
+        self._projects_sync = SynchronizerProject(*args)
+        self._issues_sync = SynchronizerIssue(*args)
 
     def sync(self, project_params: Optional[Dict] = None):
         """Основной метод синхронизации."""

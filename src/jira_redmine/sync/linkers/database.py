@@ -51,6 +51,23 @@ class DBLinker(BaseLinker):
         value = source[key] or _exc(key)
         return value
 
+    def get_target_key(self, source_object: BaseResource, *args, **kwargs):
+        """Получить код целевого ресурса."""
+        column_values = (self._target_field_name,)
+        where_values = {
+            self._resource_field_name: source_object.get_resource_caption(),
+            self._source_field_name: source_object.key,
+        }
+        row = self.get(
+            self._table_name,
+            column_values=column_values,
+            where_values=where_values,
+            *args,
+            **kwargs
+        )
+        if row:
+            return getattr(row, self._target_field_name)
+
     def link(
         self,
         source_object: BaseResource,

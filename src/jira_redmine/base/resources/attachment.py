@@ -23,3 +23,8 @@ class Attachment(BaseResource):
         self.description = description
         self.content_type = content_type
         self.creator = creator
+
+    def download(self):
+        """"""
+
+        return path

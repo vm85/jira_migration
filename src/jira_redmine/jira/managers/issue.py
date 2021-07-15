@@ -2,12 +2,14 @@
 from typing import List
 from typing import Union
 
+from jira_redmine.base.manager import IssueManagerMixin
+from jira_redmine.base.resources.attachment import Attachment
 from jira_redmine.base.resources.issue import Issue
 from jira_redmine.jira.converter import Converter
 from jira_redmine.jira.managers.base import BaseJiraManager
 
 
-class IssueManager(BaseJiraManager):
+class IssueManager(IssueManagerMixin, BaseJiraManager):
     """Менеджер доступа к задачам Jira."""
 
     def get_all(self, project_id: Union[int, str]) -> List[Issue]:
@@ -21,7 +23,7 @@ class IssueManager(BaseJiraManager):
         return Converter.get_issue(issue)
 
     def create(self, issue: Issue) -> Issue:
-        """Создать новую звдачу."""
+        """Создать новую задачу."""
         jira_issue = self._client.create_issue(
             project=issue.project.key,
             summary=issue.subject,
@@ -42,3 +44,10 @@ class IssueManager(BaseJiraManager):
     def update(self, issue: Issue) -> Issue:
         """Обновление задачи."""
         raise NotImplementedError
+
+    def add_attachment(self, issue: Issue, attachment: Attachment):
+        """"""
+        target_attachment = self._client.add_attachment(
+            issue.key, attachment.download()
+        )
+        return Converter.get_attachment(target_attachment)

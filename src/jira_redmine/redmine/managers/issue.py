@@ -2,12 +2,14 @@
 from typing import List
 from typing import Union
 
+from jira_redmine.base.manager import IssueManagerMixin
+from jira_redmine.base.resources.attachment import Attachment
 from jira_redmine.base.resources.issue import Issue
 from jira_redmine.redmine.converter import Converter
 from jira_redmine.redmine.managers.base import BaseRedmineManager
 
 
-class IssueManager(BaseRedmineManager):
+class IssueManager(IssueManagerMixin, BaseRedmineManager):
     """Менеджер доступа к задачам Redmine."""
 
     def get_all(self, project_id: Union[int, str]) -> List[Issue]:
@@ -55,3 +57,10 @@ class IssueManager(BaseRedmineManager):
         """Обновление задачи."""
         self._client.issue.update(issue.key, **fields)
         return self.get(issue.key)
+
+    def add_attachment(self, issue: Issue, attachment: Attachment):
+        """"""
+        target_attachment = self._client.issue.upload(
+            issue.key, attachment.download()
+        )
+        return Converter.get_attachment(target_attachment)

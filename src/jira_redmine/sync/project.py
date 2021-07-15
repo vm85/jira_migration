@@ -4,10 +4,11 @@ from typing import List
 from typing import Optional
 
 from jira_redmine.base.resources.project import Project
-from jira_redmine.sync.base import BaseSynchronizer
+from jira_redmine.sync.base import SynchronizerBase
+from jira_redmine.sync.base import SynchronizerCreateMixin
 
 
-class ProjectSynchronizer(BaseSynchronizer):
+class SynchronizerProject(SynchronizerCreateMixin, SynchronizerBase):
     """Класс синхронизации проектов."""
 
     def _sync(
@@ -15,9 +16,7 @@ class ProjectSynchronizer(BaseSynchronizer):
     ) -> Dict[Project, List[Project]]:
         """Синхронизация проектов."""
         if specified:
-            projects = []
-            for project_key in specified:
-                projects.append(self._source.project.get(project_key))
+            projects = [self._source.project.get(key) for key in specified]
         else:
             projects = self._source.project.get_all()
 

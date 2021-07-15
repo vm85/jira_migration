@@ -9,7 +9,7 @@ from jira_redmine.base.resources.base import BaseResource
 from jira_redmine.sync.linkers.base import BaseLinker
 
 
-class BaseSynchronizer(ABC):
+class SynchronizerBase(ABC):
     """Базовый класс синхронизации объектов."""
 
     def __init__(
@@ -26,13 +26,24 @@ class BaseSynchronizer(ABC):
     def sync(self, **kwargs):
         """Основной метод синхронизации."""
 
+
+class SynchronizerCreateMixin:
+    """"""
+
     def _get_or_create(
         self, manager: BaseManager, source_obj: BaseResource
     ) -> BaseResource:
         """Вернуть ресурс, при необходимости создать."""
-        try:
-            target_object = manager.get(source_obj.key)
-        except ObjectNotExists:
+        target_object = None
+        target_key = self._linker.get(source_obj)
+
+        if target_key:
+            try:
+                target_object = manager.get(target_key)
+            except ObjectNotExists:
+                pass
+
+        if not target_object:
             target_object = manager.create(source_obj)
 
         self._linker.link(source_obj, target_object)

@@ -4,7 +4,7 @@ from jira_redmine.base.providers.database import DBProvider
 from jira_redmine.jira.repository import JiraRepository
 from jira_redmine.redmine.repository import RedmineRepository
 from jira_redmine.sync.linkers.database import DBLinker
-from jira_redmine.sync.main import MainSynchronizer
+from jira_redmine.sync.main import Synchronizer
 import jira_redmine.jira.client_fix  # noqa: F401
 
 
@@ -36,12 +36,12 @@ db_linker = DBLinker(
     **settings.db['params']
 )
 
-s = MainSynchronizer(redmine_repo, jira_repo, db_linker)
-# s.sync(project_params=project_params)
-# s.print_all(
-#   [[], ['11'],  [], ['1'],     [], ['1'], [], ['PD'], ['PD'], ['4385']],
-#   [[], ['123'], [], ['10009'], [], ['3'], [], ['PD'], ['PD'], ['PD-2']],
-# )
+s = Synchronizer(redmine_repo, jira_repo, db_linker)
+# s.sync(project_params=settings.project)
+s.print_all(
+  [[], ['11'],  [], ['1'],     [], ['1'], [], ['PD'], ['PD'], ['4385']],
+  [[], ['123'], [], ['10009'], [], ['3'], [], ['PD'], ['PD'], ['PD-2']],
+)
 # print(redmine_repo.issue.get(4293))
 
 """

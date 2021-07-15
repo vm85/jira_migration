@@ -10,10 +10,11 @@ from jira_redmine.base.resources.journal import Journal
 from jira_redmine.base.resources.project import Project
 from jira_redmine.base.resources.relation import Relation
 from jira_redmine.base.resources.time_entry import TimeEntry
-from jira_redmine.sync.base import BaseSynchronizer
+from jira_redmine.sync.base import SynchronizerBase
+from jira_redmine.sync.base import SynchronizerCreateMixin
 
 
-class IssueSynchronizer(BaseSynchronizer):
+class SynchronizerIssue(SynchronizerCreateMixin, SynchronizerBase):
     """Класс синхронизации задач."""
 
     def _sync_additional_info(
@@ -28,6 +29,8 @@ class IssueSynchronizer(BaseSynchronizer):
 
     def _sync_attachments(self, issue: Issue, attachments: List[Attachment]):
         """Синхронизация вложений."""
+        for attachment in attachments:
+            self._target.issue.add_attachment(issue, attachment)
 
     def _sync_relations(self, issue: Issue, relations: List[Relation]):
         """Синхронизация связанных задач."""
@@ -59,7 +62,8 @@ class IssueSynchronizer(BaseSynchronizer):
         self, projects_mapped: Optional[Dict[Project, List[Project]]]
     ):
         """Синхронизация задач."""
-        for issue in self._get_issues(projects_mapped):
+        issues = self._get_issues(projects_mapped)
+        for issue in issues:
             target_issue = self._get_or_create(self._target.issue, issue)
             self._sync_additional_info(issue, target_issue)
 

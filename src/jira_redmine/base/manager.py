@@ -13,7 +13,9 @@ from redminelib import Redmine
 from redminelib.resources.base import BaseResource as RedmineResource
 
 from jira_redmine.base.exceptions import ObjectNotExists
+from jira_redmine.base.resources.attachment import Attachment
 from jira_redmine.base.resources.base import BaseResource
+from jira_redmine.base.resources.issue import Issue
 
 
 class BaseManager(ABC):
@@ -71,3 +73,11 @@ class BaseManager(ABC):
     @abstractmethod
     def create(self, resource: BaseResource) -> BaseResource:
         """Создать объект."""
+
+
+class IssueManagerMixin(ABC):
+    """"""
+
+    @abstractmethod
+    def add_attachment(self, issue: Issue, attachment: Attachment):
+        """"""
